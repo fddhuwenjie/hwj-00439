@@ -976,6 +976,28 @@ class Circuit:
             iterations += 1
             changed = False
 
+            self.fault_manager.apply_stuck_at_faults(self)
+
+            for wire in self.wires:
+                src_node = self.nodes[wire.src_node]
+                src_port = src_node.get_port(wire.src_port)
+                if src_port is None:
+                    continue
+                for dst_node_id, dst_port_name in wire.dst_pairs:
+                    dst_node = self.nodes.get(dst_node_id)
+                    if dst_node is None:
+                        continue
+                    dst_port = dst_node.get_port(dst_port_name)
+                    if dst_port is None:
+                        continue
+                    for i in range(src_port.width):
+                        if dst_port.signal[i] != src_port.signal[i]:
+                            dst_port.signal[i] = src_port.signal[i]
+                            if (dst_node_id, dst_port_name) not in bridge_port_keys:
+                                changed = True
+
+            self.fault_manager.apply_bridge_faults(self)
+
             for node in self.nodes.values():
                 if node.is_edge_triggered():
                     continue
@@ -1001,8 +1023,6 @@ class Circuit:
                             if (dst_node_id, dst_port_name) not in bridge_port_keys:
                                 changed = True
 
-            self.fault_manager.apply_bridge_faults(self)
-
             cur_output_snapshot = {}
             for nid, node in self.nodes.items():
                 for pname, port in node.outputs.items():
@@ -1015,6 +1035,8 @@ class Circuit:
                     break
 
             prev_output_snapshot = cur_output_snapshot
+
+        self.fault_manager.apply_stuck_at_faults(self)
 
         return iterations
 
