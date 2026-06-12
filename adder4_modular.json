@@ -1,0 +1,41 @@
+{
+  "nodes": [
+    {"type": "INPUT", "id": "A0", "params": {"width": 1}},
+    {"type": "INPUT", "id": "B0", "params": {"width": 1}},
+    {"type": "INPUT", "id": "A1", "params": {"width": 1}},
+    {"type": "INPUT", "id": "B1", "params": {"width": 1}},
+    {"type": "INPUT", "id": "A2", "params": {"width": 1}},
+    {"type": "INPUT", "id": "B2", "params": {"width": 1}},
+    {"type": "INPUT", "id": "A3", "params": {"width": 1}},
+    {"type": "INPUT", "id": "B3", "params": {"width": 1}},
+    {"type": "INPUT", "id": "Cin", "params": {"width": 1}},
+    {"type": "OUTPUT", "id": "S0", "params": {"width": 1}},
+    {"type": "OUTPUT", "id": "S1", "params": {"width": 1}},
+    {"type": "OUTPUT", "id": "S2", "params": {"width": 1}},
+    {"type": "OUTPUT", "id": "S3", "params": {"width": 1}},
+    {"type": "OUTPUT", "id": "Cout", "params": {"width": 1}},
+    {"type": "module", "id": "fa0", "module": "FULLADD"},
+    {"type": "module", "id": "fa1", "module": "FULLADD"},
+    {"type": "module", "id": "fa2", "module": "FULLADD"},
+    {"type": "module", "id": "fa3", "module": "FULLADD"}
+  ],
+  "wires": [
+    {"src": "Cin", "dst": ["fa0.Cin"]},
+    {"src": "A0", "dst": ["fa0.A"]},
+    {"src": "B0", "dst": ["fa0.B"]},
+    {"src": "fa0.Sum", "dst": ["S0.in"]},
+    {"src": "fa0.Cout", "dst": ["fa1.Cin"]},
+    {"src": "A1", "dst": ["fa1.A"]},
+    {"src": "B1", "dst": ["fa1.B"]},
+    {"src": "fa1.Sum", "dst": ["S1.in"]},
+    {"src": "fa1.Cout", "dst": ["fa2.Cin"]},
+    {"src": "A2", "dst": ["fa2.A"]},
+    {"src": "B2", "dst": ["fa2.B"]},
+    {"src": "fa2.Sum", "dst": ["S2.in"]},
+    {"src": "fa2.Cout", "dst": ["fa3.Cin"]},
+    {"src": "A3", "dst": ["fa3.A"]},
+    {"src": "B3", "dst": ["fa3.B"]},
+    {"src": "fa3.Sum", "dst": ["S3.in"]},
+    {"src": "fa3.Cout", "dst": ["Cout.in"]}
+  ]
+}

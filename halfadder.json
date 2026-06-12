@@ -1,0 +1,22 @@
+{
+  "ports": [
+    {"name": "A", "direction": "input", "width": 1},
+    {"name": "B", "direction": "input", "width": 1},
+    {"name": "Sum", "direction": "output", "width": 1},
+    {"name": "Cout", "direction": "output", "width": 1}
+  ],
+  "nodes": [
+    {"type": "INPUT", "id": "A", "params": {"width": 1}},
+    {"type": "INPUT", "id": "B", "params": {"width": 1}},
+    {"type": "OUTPUT", "id": "Sum", "params": {"width": 1}},
+    {"type": "OUTPUT", "id": "Cout", "params": {"width": 1}},
+    {"type": "XOR", "id": "xor_sum", "params": {"num_inputs": 2}},
+    {"type": "AND", "id": "and_cout", "params": {"num_inputs": 2}}
+  ],
+  "wires": [
+    {"src": "A", "dst": ["xor_sum.in0", "and_cout.in0"]},
+    {"src": "B", "dst": ["xor_sum.in1", "and_cout.in1"]},
+    {"src": "xor_sum.out", "dst": ["Sum.in"]},
+    {"src": "and_cout.out", "dst": ["Cout.in"]}
+  ]
+}

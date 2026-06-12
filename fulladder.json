@@ -1,0 +1,29 @@
+{
+  "ports": [
+    {"name": "A", "direction": "input", "width": 1},
+    {"name": "B", "direction": "input", "width": 1},
+    {"name": "Cin", "direction": "input", "width": 1},
+    {"name": "Sum", "direction": "output", "width": 1},
+    {"name": "Cout", "direction": "output", "width": 1}
+  ],
+  "nodes": [
+    {"type": "INPUT", "id": "A", "params": {"width": 1}},
+    {"type": "INPUT", "id": "B", "params": {"width": 1}},
+    {"type": "INPUT", "id": "Cin", "params": {"width": 1}},
+    {"type": "OUTPUT", "id": "Sum", "params": {"width": 1}},
+    {"type": "OUTPUT", "id": "Cout", "params": {"width": 1}},
+    {"type": "module", "id": "ha1", "module": "HALFADD"},
+    {"type": "module", "id": "ha2", "module": "HALFADD"},
+    {"type": "OR", "id": "or_cout", "params": {"num_inputs": 2}}
+  ],
+  "wires": [
+    {"src": "A", "dst": ["ha1.A"]},
+    {"src": "B", "dst": ["ha1.B"]},
+    {"src": "ha1.Sum", "dst": ["ha2.A"]},
+    {"src": "Cin", "dst": ["ha2.B"]},
+    {"src": "ha2.Sum", "dst": ["Sum.in"]},
+    {"src": "ha1.Cout", "dst": ["or_cout.in0"]},
+    {"src": "ha2.Cout", "dst": ["or_cout.in1"]},
+    {"src": "or_cout.out", "dst": ["Cout.in"]}
+  ]
+}
