@@ -419,9 +419,13 @@ class BridgeFault(Fault):
 class FaultManager:
     def __init__(self):
         self.faults: List[Fault] = []
+        self._stuck_at_index: Dict[str, Dict[str, int]] = {}
 
     def add_stuck_at(self, node_id: str, port_name: str, value: int):
         self.faults.append(StuckAtFault(node_id, port_name, value))
+        if node_id not in self._stuck_at_index:
+            self._stuck_at_index[node_id] = {}
+        self._stuck_at_index[node_id][port_name] = value
 
     def add_bridge(self, node1: str, port1: str, node2: str, port2: str):
         self.faults.append(BridgeFault(node1, port1, node2, port2))
@@ -431,6 +435,20 @@ class FaultManager:
 
     def clear(self):
         self.faults.clear()
+        self._stuck_at_index.clear()
+
+    def has_stuck_at(self, node_id: str) -> bool:
+        return node_id in self._stuck_at_index
+
+    def apply_stuck_at_to_node(self, node: 'CircuitNode'):
+        faults = self._stuck_at_index.get(node.id)
+        if not faults:
+            return
+        for port_name, value in faults.items():
+            port = node.get_port(port_name)
+            if port:
+                for i in range(port.width):
+                    port.signal[i] = value
 
     def apply_stuck_at_faults(self, circuit: 'Circuit'):
         for fault in self.faults:
@@ -733,7 +751,15 @@ class ATPG:
             if name in sim_circuit.input_nodes:
                 sim_circuit.set_input(name, val)
 
-        sim_circuit.fault_manager.faults.append(fault)
+        if isinstance(fault, StuckAtFault):
+            sim_circuit.fault_manager.add_stuck_at(
+                fault.node_id, fault.port_name, fault.value)
+        elif isinstance(fault, BridgeFault):
+            sim_circuit.fault_manager.add_bridge(
+                fault.node1_id, fault.port1_name,
+                fault.node2_id, fault.port2_name)
+        else:
+            sim_circuit.fault_manager.faults.append(fault)
 
         sim_circuit.evaluate_combinational()
 
@@ -970,6 +996,9 @@ class Circuit:
                 bridge_port_keys.add((fault.node1_id, fault.port1_name))
                 bridge_port_keys.add((fault.node2_id, fault.port2_name))
 
+        fm = self.fault_manager
+        has_any_stuck_at = len(fm._stuck_at_index) > 0
+
         prev_output_snapshot = None
 
         while iterations < max_iterations:
@@ -980,8 +1009,8 @@ class Circuit:
                 if node.is_edge_triggered():
                     continue
                 node.evaluate()
-
-            self.fault_manager.apply_stuck_at_faults(self)
+                if has_any_stuck_at and fm.has_stuck_at(node.id):
+                    fm.apply_stuck_at_to_node(node)
 
             for wire in self.wires:
                 src_node = self.nodes[wire.src_node]
@@ -1016,7 +1045,10 @@ class Circuit:
 
             prev_output_snapshot = cur_output_snapshot
 
-        self.fault_manager.apply_stuck_at_faults(self)
+        if has_any_stuck_at:
+            for node in self.nodes.values():
+                if fm.has_stuck_at(node.id):
+                    fm.apply_stuck_at_to_node(node)
 
         return iterations
 
