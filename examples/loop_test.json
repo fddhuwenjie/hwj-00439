@@ -1,0 +1,13 @@
+{
+  "nodes": [
+    {"type": "INPUT", "id": "A", "params": {"width": 1}},
+    {"type": "OR", "id": "or1", "params": {"num_inputs": 2}},
+    {"type": "NOT", "id": "not1"},
+    {"type": "OUTPUT", "id": "Y", "params": {"width": 1}}
+  ],
+  "wires": [
+    {"src": "A", "dst": ["or1.in0"]},
+    {"src": "not1.out", "dst": ["or1.in1"]},
+    {"src": "or1.out", "dst": ["not1.in0", "Y.in"]}
+  ]
+}

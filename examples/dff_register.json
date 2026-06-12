@@ -1,0 +1,13 @@
+{
+  "nodes": [
+    {"type": "INPUT", "id": "D", "params": {"width": 4}},
+    {"type": "INPUT", "id": "EN", "params": {"width": 1}},
+    {"type": "REG", "id": "reg1", "params": {"width": 4}},
+    {"type": "OUTPUT", "id": "Q", "params": {"width": 4}}
+  ],
+  "wires": [
+    {"src": "D", "dst": ["reg1.D"]},
+    {"src": "EN", "dst": ["reg1.EN"]},
+    {"src": "reg1.Q", "dst": ["Q.in"]}
+  ]
+}

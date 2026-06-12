@@ -1,0 +1,13 @@
+{
+  "nodes": [
+    {"type": "INPUT", "id": "A", "params": {"width": 1}},
+    {"type": "INPUT", "id": "B", "params": {"width": 1}},
+    {"type": "AND", "id": "gate1", "params": {"num_inputs": 2}},
+    {"type": "OUTPUT", "id": "Y", "params": {"width": 1}}
+  ],
+  "wires": [
+    {"src": "A", "dst": ["gate1.in0"]},
+    {"src": "B", "dst": ["gate1.in1"]},
+    {"src": "gate1.out", "dst": ["Y.in"]}
+  ]
+}

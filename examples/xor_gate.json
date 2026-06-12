@@ -1,0 +1,16 @@
+{
+  "nodes": [
+    {"type": "INPUT", "id": "A", "params": {"width": 1}},
+    {"type": "INPUT", "id": "B", "params": {"width": 1}},
+    {"type": "XOR", "id": "xor1", "params": {"num_inputs": 2}},
+    {"type": "XNOR", "id": "xnor1", "params": {"num_inputs": 2}},
+    {"type": "OUTPUT", "id": "Y_xor", "params": {"width": 1}},
+    {"type": "OUTPUT", "id": "Y_xnor", "params": {"width": 1}}
+  ],
+  "wires": [
+    {"src": "A", "dst": ["xor1.in0", "xnor1.in0"]},
+    {"src": "B", "dst": ["xor1.in1", "xnor1.in1"]},
+    {"src": "xor1.out", "dst": ["Y_xor.in"]},
+    {"src": "xnor1.out", "dst": ["Y_xnor.in"]}
+  ]
+}

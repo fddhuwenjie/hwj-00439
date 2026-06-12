@@ -1,0 +1,15 @@
+{
+  "nodes": [
+    {"type": "INPUT", "id": "S", "params": {"width": 1}},
+    {"type": "INPUT", "id": "R", "params": {"width": 1}},
+    {"type": "SRLATCH", "id": "sr1"},
+    {"type": "OUTPUT", "id": "Q", "params": {"width": 1}},
+    {"type": "OUTPUT", "id": "Qn", "params": {"width": 1}}
+  ],
+  "wires": [
+    {"src": "S", "dst": ["sr1.S"]},
+    {"src": "R", "dst": ["sr1.R"]},
+    {"src": "sr1.Q", "dst": ["Q.in"]},
+    {"src": "sr1.Qn", "dst": ["Qn.in"]}
+  ]
+}
